@@ -7,7 +7,6 @@ import {
 class SpecificationsRepository implements ISpecificationsRepository {
   private specifications: Specification[];
 
-  // eslint-disable-next-line no-use-before-define
   private static INSTANCE: SpecificationsRepository;
 
   private constructor() {
