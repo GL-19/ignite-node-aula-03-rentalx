@@ -1,9 +1,18 @@
-import { inject } from 'tsyringe';
+import { inject, injectable } from 'tsyringe';
 
-import { UsersRepository } from '../../repositories/implementations/UsersRepository';
+import { ICreateUserDTO } from '../../dtos/ICreateUserDTO';
+import { IUsersRepository } from '../../repositories/IUsersRepository';
 
+@injectable()
 class CreateUserUseCase {
-  constructor();
+  constructor(
+    @inject('UsersRepository')
+    private usersRepository: IUsersRepository
+  ) {}
+
+  async execute(data: ICreateUserDTO): Promise<void> {
+    await this.usersRepository.create(data);
+  }
 }
 
 export { CreateUserUseCase };
