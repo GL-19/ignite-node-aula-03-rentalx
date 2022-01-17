@@ -1,0 +1,3 @@
+class UpdateUserAvatar {}
+
+export { UpdateUserAvatar };
