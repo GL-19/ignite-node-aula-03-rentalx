@@ -1,10 +1,10 @@
 import { Car } from '@modules/cars/infra/typeorm/entities/Car';
 import { CarsRepositoryInMemory } from '@modules/cars/repositories/in-memory/CarsRepositoryInMemory';
 
-import { ListCarsUseCase } from './ListCarsUseCase';
+import { ListAvailableCarsUseCase } from './ListAvailableCarsUseCase';
 
 let carsRepository: CarsRepositoryInMemory;
-let listCarsUseCase: ListCarsUseCase;
+let listAvailableCarsUseCase: ListAvailableCarsUseCase;
 let car1: Car;
 let car2: Car;
 let car3: Car;
@@ -12,7 +12,7 @@ let car3: Car;
 describe('List Cars', () => {
   beforeEach(async () => {
     carsRepository = new CarsRepositoryInMemory();
-    listCarsUseCase = new ListCarsUseCase(carsRepository);
+    listAvailableCarsUseCase = new ListAvailableCarsUseCase(carsRepository);
 
     car1 = await carsRepository.create({
       name: 'Car 1',
@@ -46,13 +46,13 @@ describe('List Cars', () => {
   });
 
   it('should be able to list all available cars', async () => {
-    const cars = await listCarsUseCase.execute({});
+    const cars = await listAvailableCarsUseCase.execute({});
 
     expect(cars).toEqual([car1, car2, car3]);
   });
 
   it('should be able to list all available cars by brand', async () => {
-    const cars = await listCarsUseCase.execute({
+    const cars = await listAvailableCarsUseCase.execute({
       brand: 'Brand 1',
     });
 
@@ -60,7 +60,7 @@ describe('List Cars', () => {
   });
 
   it('should be able to list all available cars by category', async () => {
-    const cars = await listCarsUseCase.execute({
+    const cars = await listAvailableCarsUseCase.execute({
       category_id: 'category 2',
     });
 
@@ -68,7 +68,7 @@ describe('List Cars', () => {
   });
 
   it('should be able to list all available cars by name', async () => {
-    const cars = await listCarsUseCase.execute({
+    const cars = await listAvailableCarsUseCase.execute({
       name: 'Car 3',
     });
 

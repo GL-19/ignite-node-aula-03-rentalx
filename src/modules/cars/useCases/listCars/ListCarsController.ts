@@ -1,3 +1,0 @@
-class ListCarsController {}
-
-export { ListCarsController };
