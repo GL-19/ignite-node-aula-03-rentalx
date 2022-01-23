@@ -41,6 +41,14 @@ class CarsRepository implements ICarsRepository {
 
     return car;
   }
+
+  async findAvailable(
+    brand?: string,
+    category_id?: string,
+    name?: string
+  ): Promise<Car[]> {
+    throw new Error('Method not implemented.');
+  }
 }
 
 export { CarsRepository };

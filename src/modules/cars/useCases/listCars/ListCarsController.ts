@@ -1,0 +1,3 @@
+class ListCarsController {}
+
+export { ListCarsController };
