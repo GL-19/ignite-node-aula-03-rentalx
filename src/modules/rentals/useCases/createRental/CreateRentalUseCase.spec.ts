@@ -1,21 +1,21 @@
 import dayjs from 'dayjs';
 
 import { RentalsRepositoryInMemory } from '@modules/rentals/repositories/in-memory/RentalsRepositoryInMemory';
-import { DatejsDateProvider } from '@shared/container/providers/DateProvider/implementations/DatejsDateProvider';
+import { DayjsDateProvider } from '@shared/container/providers/DateProvider/implementations/DayjsDateProvider';
 import { AppError } from '@shared/errors/AppError';
 
 import { CreateRentalUseCase } from './CreateRentalUseCase';
 
 let createRentalUseCase: CreateRentalUseCase;
 let rentalsRepository: RentalsRepositoryInMemory;
-let dayjsDateProvider: DatejsDateProvider;
+let dayjsDateProvider: DayjsDateProvider;
 
 describe('Create Rental', () => {
   const dayAdd24Hours = dayjs().add(1, 'day').toDate();
 
   beforeEach(() => {
     rentalsRepository = new RentalsRepositoryInMemory();
-    dayjsDateProvider = new DatejsDateProvider();
+    dayjsDateProvider = new DayjsDateProvider();
     createRentalUseCase = new CreateRentalUseCase(
       rentalsRepository,
       dayjsDateProvider
@@ -51,7 +51,7 @@ describe('Create Rental', () => {
     }).rejects.toBeInstanceOf(AppError);
   });
 
-  it('should not be able to allow more than one car renting per user', async () => {
+  it('should not be able to allow more than one rented car per user', async () => {
     expect(async () => {
       await createRentalUseCase.execute({
         user_id: '12345',
