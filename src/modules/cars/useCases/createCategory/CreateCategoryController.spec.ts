@@ -37,8 +37,6 @@ describe('Create Category Controller', () => {
       password: 'admin',
     });
 
-    console.log(responseToken.body);
-
     const { token } = responseToken.body;
 
     const response = await request(app)

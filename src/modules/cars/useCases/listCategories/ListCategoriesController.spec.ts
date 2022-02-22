@@ -37,8 +37,6 @@ describe('List Categories Controller', () => {
       password: 'admin',
     });
 
-    console.log(responseToken.body);
-
     const { token } = responseToken.body;
 
     await request(app)
@@ -52,8 +50,6 @@ describe('List Categories Controller', () => {
       });
 
     const response = await request(app).get('/categories');
-
-    console.log(response.body);
 
     expect(response.status).toBe(200);
     expect(response.body.length).toBe(1);
