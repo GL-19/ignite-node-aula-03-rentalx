@@ -17,3 +17,5 @@ router.use('/password', passwordRoutes);
 router.use('/cars', carsRoutes);
 router.use('/rentals', rentalsRoutes);
 router.use(authenticateRoutes);
+
+export { router };
