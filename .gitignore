@@ -1,5 +1,8 @@
 /node_modules
 /dist
 /coverage
+/tmp/*
+.vscode
 .env
+!tmp/.gitkeep
 
