@@ -3,7 +3,7 @@ import { Connection, createConnection, getConnectionOptions } from 'typeorm';
 // Trecho de código para rodar no linux, na EC2, com apenas o banco de dados no docker
 // O comando utilizado é: docker-compose up -d database_ignite
 
-/* export default async (): Promise<Connection> => {
+export default async (): Promise<Connection> => {
   const defaultOptions = await getConnectionOptions();
 
   return createConnection(
@@ -14,12 +14,12 @@ import { Connection, createConnection, getConnectionOptions } from 'typeorm';
           : defaultOptions.database,
     })
   );
-}; */
+};
 
 // Trecho para rodar no windows, com o servidor e o banco juntos no docker
 // O comando utilizado é: docker-compose up
 
-export default async (host = 'database_ignite'): Promise<Connection> => {
+/* export default async (host = 'database_ignite'): Promise<Connection> => {
   const defaultOptions = await getConnectionOptions();
 
   return createConnection(
@@ -31,4 +31,4 @@ export default async (host = 'database_ignite'): Promise<Connection> => {
           : defaultOptions.database,
     })
   );
-};
+}; */
