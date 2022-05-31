@@ -33,3 +33,17 @@ jobs:
           key: ${{ secrets.SSH_KEY }}
           source: "., !node_modules"
           target: "~/ignite/ignite-node-aula-03-rentalx"
+          
+      - name: Update API
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          port: ${{ secrets.SSH_PORT }}
+          passphrase: ${{ secrets.SSH_PASSWORD }}
+          key: ${{ secrets.SSH_KEY }}
+          script: |
+            cd ~/ignite/ignite-node-aula-03-rentalx
+            npm install
+            ./node_modules/.bin/typeorm migration:run
+            pm2 restart rentx_api
