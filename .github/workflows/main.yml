@@ -32,4 +32,4 @@ jobs:
           passphrase: ${{ secrets.SSH_PASSWORD }}
           key: ${{ secrets.SSH_KEY }}
           source: "., !node_modules"
-          target: "test"
+          target: "~/ignite/ignite-node-aula-03-rentalx$"
