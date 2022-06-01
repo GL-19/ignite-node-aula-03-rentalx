@@ -3,7 +3,7 @@ import { Connection, createConnection, getConnectionOptions } from 'typeorm';
 // Trecho para utilizar no ambiente de produção, em que o servidor não esta no docker
 // O comando utilizado é: docker-compose up -d database_ignite redis
 
-export default async (): Promise<Connection> => {
+/* export default async (): Promise<Connection> => {
   const defaultOptions = await getConnectionOptions();
 
   return createConnection(
@@ -14,12 +14,12 @@ export default async (): Promise<Connection> => {
           : defaultOptions.database,
     })
   );
-};
+}; */
 
 // Trecho para rodar no ambiente de desenvolvimento, com servidor no docker
 // O comando utilizado é: docker-compose up
 
-/* export default async (host = 'database_ignite'): Promise<Connection> => {
+export default async (host = 'database_ignite'): Promise<Connection> => {
   const defaultOptions = await getConnectionOptions();
 
   return createConnection(
@@ -31,4 +31,4 @@ export default async (): Promise<Connection> => {
           : defaultOptions.database,
     })
   );
-}; */
+};
