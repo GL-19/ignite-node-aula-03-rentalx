@@ -9,6 +9,10 @@ export default async function rateLimiter(
   response: Response,
   next: NextFunction
 ): Promise<void> {
+  if (process.env.NODE_ENV === 'test') {
+    next();
+  }
+
   const redisClient = createClient({
     legacyMode: true,
     socket: {
