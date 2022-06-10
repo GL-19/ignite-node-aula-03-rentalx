@@ -7,22 +7,39 @@ class RentalsRepositoryInMemory implements IRentalsRepository {
   private rentals: Rental[] = [];
 
   async create({
+    id,
     car_id,
     user_id,
     expected_return_date,
+    end_date = null,
+    total = null,
   }: ICreateRentalDTO): Promise<Rental> {
-    const rental = new Rental();
+    const rentalIndex = this.rentals.findIndex((rental) => rental.id === id);
 
-    Object.assign(rental, {
-      car_id,
-      user_id,
-      expected_return_date,
-      start_date: new Date(),
-    });
+    if (rentalIndex === -1) {
+      const rental = new Rental();
 
-    this.rentals.push(rental);
+      Object.assign(rental, {
+        car_id,
+        user_id,
+        expected_return_date,
+        start_date: new Date(),
+        total,
+        end_date,
+      });
 
-    return rental;
+      this.rentals.push(rental);
+
+      return rental;
+    }
+
+    this.rentals[rentalIndex] = {
+      ...this.rentals[rentalIndex],
+      end_date,
+      total,
+    };
+
+    return this.rentals[rentalIndex];
   }
 
   async findOpenRentalByCar(car_id: string): Promise<Rental> {
