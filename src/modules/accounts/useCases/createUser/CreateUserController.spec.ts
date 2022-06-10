@@ -23,24 +23,21 @@ describe('Create User Controller', () => {
     await request(app)
       .post('/users')
       .send({
-        name: 'Glauber',
-        email: 'glauber@email.com',
+        name: 'test',
+        email: 'test@gmail.com',
         password: '12345',
-        driver_license: '987654321',
+        driver_license: 'WWAA-2755',
       })
       .expect(201);
   });
 
   it('Should not be able to create user with a repeated email', async () => {
-    await request(app)
-      .post('/users')
-      .send({
-        name: 'test email',
-        email: 'test_email@gmail.com',
-        password: '12345',
-        driver_license: 'WWAA-2755',
-      })
-      .expect(201);
+    await request(app).post('/users').send({
+      name: 'test email',
+      email: 'test_email@gmail.com',
+      password: '12345',
+      driver_license: 'WWAA-2755',
+    });
 
     const response = await request(app)
       .post('/users')
