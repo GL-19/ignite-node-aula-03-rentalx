@@ -25,25 +25,38 @@ class RefreshTokenUseCase {
     private dateProvider: IDateProvider
   ) {}
 
-  async execute(token: string): Promise<ITokenResponse> {
-    const { email, sub: user_id } = verify(
-      token,
-      auth.secret_refresh_token
-    ) as IPayload;
+  async execute(refresh_token: string): Promise<ITokenResponse> {
+    let email: string;
+    let user_id: string;
+    /*  { email, sub: user_id } */
+    try {
+      const verifyResponse = verify(
+        refresh_token,
+        auth.secret_refresh_token
+      ) as IPayload;
 
-    const userToken =
+      email = verifyResponse.email;
+      user_id = verifyResponse.sub;
+    } catch (err) {
+      throw new AppError('Invalid refresh token!', 401);
+    }
+    console.log('cheguei no banco');
+
+    const userRefreshToken =
       await this.usersTokensRepository.findByUserIdAndRefreshToken(
         user_id,
-        token
+        refresh_token
       );
 
-    if (!userToken) {
+    console.log('cheguei no erro');
+
+    if (!userRefreshToken) {
       throw new AppError('Refresh Token does not exist!');
     }
 
-    await this.usersTokensRepository.deleteById(userToken.id);
+    await this.usersTokensRepository.deleteById(userRefreshToken.id);
 
-    const refresh_token = sign({ email }, auth.secret_refresh_token, {
+    const newRefreshToken = sign({ email }, auth.secret_refresh_token, {
       subject: user_id,
       expiresIn: auth.expires_in_refresh_token,
     });
@@ -54,7 +67,7 @@ class RefreshTokenUseCase {
 
     await this.usersTokensRepository.create({
       user_id,
-      refresh_token,
+      refresh_token: newRefreshToken,
       expiration_date,
     });
 
@@ -64,7 +77,7 @@ class RefreshTokenUseCase {
     });
 
     return {
-      refresh_token,
+      refresh_token: newRefreshToken,
       token: newToken,
     };
   }

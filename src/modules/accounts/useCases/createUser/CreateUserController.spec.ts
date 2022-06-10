@@ -32,31 +32,36 @@ describe('Create User Controller', () => {
   });
 
   it('Should be able to create a new user', async () => {
-    const response = await request(app).post('').send({
+    const response = await request(app).post('/').send({
       name: 'test create',
       email: 'test_create@gmail.com',
       password: '12345',
-      driver_license: 'XXXX-1155',
+      driver_license: 'XXZZ-1155',
     });
+
+    console.log('Teste criação', response.error);
 
     expect(response.statusCode).toBe(201);
   });
 
   it('Should not be able to create user with repeated email', async () => {
-    await request(app).post('').send({
+    await request(app).post('/').send({
       name: 'test email',
       email: 'test_email@gmail.com',
       password: '12345',
-      driver_license: 'XXAA-2755',
+      driver_license: 'WWAA-2755',
     });
 
-    const response = await request(app).post('').send({
+    const response = await request(app).post('/').send({
       name: 'test email',
       email: 'test_email@gmail.com',
       password: '12345',
-      driver_license: 'XXAA-2755',
+      driver_license: 'WWAA-2755',
     });
 
+    console.log('Teste erro', response.error);
+
+    expect(response.body.message).toBe('User already exists');
     expect(response.statusCode).toBe(400);
   });
 });
