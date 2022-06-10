@@ -1,4 +1,4 @@
-import { sign, verify } from 'jsonwebtoken';
+import { sign } from 'jsonwebtoken';
 
 import auth from '@config/auth';
 import { UsersRepositoryInMemory } from '@modules/accounts/repositories/in-memory/UsersRepositoryInMemory';
@@ -60,7 +60,7 @@ describe('Refresh Token Use Case', () => {
     expect(response).toHaveProperty('refresh_token');
   });
 
-  it('should not return new token if refresh token is invalid ', async () => {
+  it('should not return new token if refresh token is invalid', async () => {
     await expect(
       refreshTokenUseCase.execute('adjnasdpoasdpál')
     ).rejects.toEqual(new AppError('Invalid refresh token!', 401));
@@ -75,15 +75,6 @@ describe('Refresh Token Use Case', () => {
         expiresIn: auth.expires_in_refresh_token,
       }
     );
-
-    console.log(refresh_token);
-
-    const { email, sub: user_id } = verify(
-      refresh_token,
-      auth.secret_refresh_token
-    );
-
-    console.log(email, user_id);
 
     await expect(refreshTokenUseCase.execute(refresh_token)).rejects.toEqual(
       new AppError('Refresh Token does not exist!')

@@ -28,7 +28,7 @@ class RefreshTokenUseCase {
   async execute(refresh_token: string): Promise<ITokenResponse> {
     let email: string;
     let user_id: string;
-    /*  { email, sub: user_id } */
+
     try {
       const verifyResponse = verify(
         refresh_token,
@@ -40,15 +40,12 @@ class RefreshTokenUseCase {
     } catch (err) {
       throw new AppError('Invalid refresh token!', 401);
     }
-    console.log('cheguei no banco');
 
     const userRefreshToken =
       await this.usersTokensRepository.findByUserIdAndRefreshToken(
         user_id,
         refresh_token
       );
-
-    console.log('cheguei no erro');
 
     if (!userRefreshToken) {
       throw new AppError('Refresh Token does not exist!');

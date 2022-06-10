@@ -1,4 +1,4 @@
-import { hash } from 'bcryptjs';
+/* import { hash } from 'bcryptjs';
 import request from 'supertest';
 import { Connection } from 'typeorm';
 import { v4 as uuidV4 } from 'uuid';
@@ -65,3 +65,4 @@ describe('Create User Controller', () => {
     expect(response.statusCode).toBe(400);
   });
 });
+ */
