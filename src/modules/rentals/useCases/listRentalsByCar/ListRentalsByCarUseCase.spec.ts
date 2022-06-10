@@ -6,7 +6,7 @@ import { DayjsDateProvider } from '@shared/container/providers/DateProvider/impl
 
 import { CreateRentalUseCase } from '../createRental/CreateRentalUseCase';
 import { DevolutionRentalUseCase } from '../devolutionRental/DevolutionRentalUseCase';
-import { ListRentalsByUserUseCase } from './ListRentalsByUserUseCase';
+import { ListRentalsByCarUseCase } from './ListRentalsByCarUseCase';
 
 let rentalsRepository: RentalsRepositoryInMemory;
 let carsRepository: CarsRepositoryInMemory;
@@ -14,7 +14,7 @@ let dateProvider: DayjsDateProvider;
 
 let createRentalUseCase: CreateRentalUseCase;
 let devolutionRentalUseCase: DevolutionRentalUseCase;
-let listRentalsByUserUseCase: ListRentalsByUserUseCase;
+let listRentalsByCarUseCase: ListRentalsByCarUseCase;
 
 const dayAdd24Hours = dayjs().add(1, 'day').toDate();
 
@@ -36,11 +36,11 @@ describe('List Rentals By User', () => {
       dateProvider
     );
 
-    listRentalsByUserUseCase = new ListRentalsByUserUseCase(rentalsRepository);
+    listRentalsByCarUseCase = new ListRentalsByCarUseCase(rentalsRepository);
   });
 
-  it('Should list all user rentals', async () => {
-    const car1 = await carsRepository.create({
+  it('Should list all rentals of a car', async () => {
+    const car = await carsRepository.create({
       name: 'Test Car 1',
       brand: 'Brand 1',
       category_id: 'test',
@@ -50,7 +50,7 @@ describe('List Rentals By User', () => {
       fine_amount: 60,
     });
 
-    const car2 = await carsRepository.create({
+    const anotherCar = await carsRepository.create({
       name: 'Test Car 2',
       brand: 'Brand 1',
       category_id: 'test',
@@ -60,59 +60,49 @@ describe('List Rentals By User', () => {
       fine_amount: 75,
     });
 
-    const car3 = await carsRepository.create({
-      name: 'Test Car 3',
-      brand: 'Brand 2',
-      category_id: 'test',
-      description: 'Description of test car 3',
-      license_plate: 'CCXX-1155',
-      daily_rate: 200,
-      fine_amount: 100,
-    });
-
-    const firstUserId = '12345';
-    const secondUserId = '57890';
-
-    const { id } = await createRentalUseCase.execute({
-      user_id: firstUserId,
-      car_id: car1.id,
+    const { id: firstRental_id } = await createRentalUseCase.execute({
+      user_id: '12345',
+      car_id: car.id,
       expected_return_date: dayAdd24Hours,
     });
 
-    const firstUserFirstRental = await devolutionRentalUseCase.execute({
-      id,
+    const firstRental = await devolutionRentalUseCase.execute({
+      id: firstRental_id,
     });
 
-    const firstUserSecondRental = await createRentalUseCase.execute({
-      user_id: firstUserId,
-      car_id: car2.id,
+    const { id: secondRental_id } = await createRentalUseCase.execute({
+      user_id: '5489',
+      car_id: car.id,
       expected_return_date: dayAdd24Hours,
     });
 
-    const secondUserFirstRental = await createRentalUseCase.execute({
-      user_id: secondUserId,
-      car_id: car3.id,
+    const secondRental = await devolutionRentalUseCase.execute({
+      id: secondRental_id,
+    });
+
+    const thirdRental = await createRentalUseCase.execute({
+      user_id: '2496',
+      car_id: car.id,
       expected_return_date: dayAdd24Hours,
     });
 
-    const firstUserRentalsList = await listRentalsByUserUseCase.execute(
-      firstUserId
-    );
+    const anotherCarRental = await createRentalUseCase.execute({
+      user_id: '3256',
+      car_id: anotherCar.id,
+      expected_return_date: dayAdd24Hours,
+    });
 
-    const secondUserRentalsList = await listRentalsByUserUseCase.execute(
-      secondUserId
-    );
+    const rentals = await listRentalsByCarUseCase.execute(car.id);
 
-    expect(firstUserRentalsList).toHaveLength(2);
-    expect(secondUserRentalsList).toHaveLength(1);
-
-    expect(firstUserRentalsList).toContainEqual(firstUserFirstRental);
-    expect(firstUserRentalsList).toContainEqual(firstUserSecondRental);
-    expect(secondUserRentalsList).toContainEqual(secondUserFirstRental);
+    expect(rentals).toHaveLength(3);
+    expect(rentals).toContainEqual(firstRental);
+    expect(rentals).toContainEqual(secondRental);
+    expect(rentals).toContainEqual(thirdRental);
+    expect(rentals).not.toContainEqual(anotherCarRental);
   });
 
-  it('Should return empty array if user has no rentals', async () => {
-    const rentals = await listRentalsByUserUseCase.execute('0000');
+  it('Should return empty array if car has not been rented', async () => {
+    const rentals = await listRentalsByCarUseCase.execute('0000');
 
     expect(rentals).toHaveLength(0);
   });
