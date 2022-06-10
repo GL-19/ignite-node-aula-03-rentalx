@@ -3,6 +3,7 @@ import dayjs from 'dayjs';
 import { CarsRepositoryInMemory } from '@modules/cars/repositories/in-memory/CarsRepositoryInMemory';
 import { RentalsRepositoryInMemory } from '@modules/rentals/repositories/in-memory/RentalsRepositoryInMemory';
 import { DayjsDateProvider } from '@shared/container/providers/DateProvider/implementations/DayjsDateProvider';
+import { AppError } from '@shared/errors/AppError';
 
 import { CreateRentalUseCase } from '../createRental/CreateRentalUseCase';
 import { DevolutionRentalUseCase } from '../devolutionRental/DevolutionRentalUseCase';
@@ -36,7 +37,10 @@ describe('List Rentals By User', () => {
       dateProvider
     );
 
-    listRentalsByCarUseCase = new ListRentalsByCarUseCase(rentalsRepository);
+    listRentalsByCarUseCase = new ListRentalsByCarUseCase(
+      rentalsRepository,
+      carsRepository
+    );
   });
 
   it('Should list all rentals of a car', async () => {
@@ -102,8 +106,24 @@ describe('List Rentals By User', () => {
   });
 
   it('Should return empty array if car has not been rented', async () => {
-    const rentals = await listRentalsByCarUseCase.execute('0000');
+    const car = await carsRepository.create({
+      name: 'Test Car',
+      brand: 'Brand 1',
+      category_id: 'test',
+      description: 'Description of test car',
+      license_plate: 'XXXX-2222',
+      daily_rate: 120,
+      fine_amount: 60,
+    });
+
+    const rentals = await listRentalsByCarUseCase.execute(car.id);
 
     expect(rentals).toHaveLength(0);
+  });
+
+  it('Should throw error if car does not exist', async () => {
+    await expect(listRentalsByCarUseCase.execute('0000')).rejects.toEqual(
+      new AppError('Car not found!')
+    );
   });
 });

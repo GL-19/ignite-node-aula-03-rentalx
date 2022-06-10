@@ -24,7 +24,7 @@ class DevolutionRentalUseCase {
   async execute({ id }: IRequest): Promise<Rental> {
     const rental = await this.rentalsRepository.findById(id);
 
-    if (!rental) {
+    if (!rental || rental.end_date !== null) {
       throw new AppError('Rental does not exist!');
     }
 
